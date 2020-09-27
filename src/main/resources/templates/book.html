@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>V1.0.1</title>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="css/animate/animate.css"> -->
+    
+    <!--jqgrid-->
+    <link rel="stylesheet" href="/js/jqgrid/css/ui.jqgrid.css" />
+    <link rel="stylesheet" href="/js/jqgrid/css/css/redmond/jquery-ui-1.8.16.custom.css" />
+    
+    <!-- selectpage分页下拉 -->
+    <link rel="stylesheet" href="/js/selectpage/selectpage.bootstrap3.css" type="text/css">
+    <!--select2下拉-->
+    <link rel="stylesheet" href="/js/select2/css/select2.min.css">
+    <link rel="stylesheet" href="/js/select2/css/select2-bootstrap.min.css">
+    
+    <!--通用-->
+    <link href="/iconfont/iconfont.css" rel="stylesheet"><!--阿里图标-->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/web-style.css">
+    <script src="/js/jquery-1.11.2.min.js"></script>
+	
+</head>
+
+<body class="layout clear" style="min-height: 104vh;" id ="vues">
+ <div class="row animated fadeInUp" >
+  	<div class="page-header">
+        <div class="rightside-header">
+            <div class="header-separator"></div>
+            <div class="header-section">
+                <a href="javascript:void(0)" onclick="logout()"><i class="icon-signin log-out" aria-hidden="true"></i> 退出</a>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+     <div class="col-sm-12"> 
+         <h6 class=""><b>图书管理系统</b></h6>
+         <div class="panel">
+             <div class="panel-content">
+                 <div class="row" style="margin-left: 0px;">
+                     <div class="col-md-12">
+                         <form class="form-horizontal filters">
+                             <div class="form-group control-bar-wrapper">
+                                 <div class="col-sm-2">
+                                    <span class="input-with-icon right-icon-input">
+                                        <input type="text" class="form-control" id="bookName" placeholder="图书名称">
+                                    </span>
+                               	 </div>
+                               	 <div class="col-sm-2">
+                                    <span class="input-with-icon right-icon-input">
+                                        <input type="text" class="form-control" id="author" placeholder="作者">
+                                    </span>
+                               	 </div>
+                               	 
+                               	 <div class="col-sm-1" style="width: 10%">
+		                              <select name="consignment_type" id="byprice" class="form-control" style="width: 100%">
+		                                  <option value="">价格排序</option>
+		                                  <option value="1">正序</option>
+		                                  <option value="2">倒序</option>
+		                              </select>
+		                          </div>
+		                           <div class="col-sm-1" style="width: 10%">
+		                              <select name="consignment_type" id="byday" class="form-control" style="width: 100%">
+		                                  <option value="">借书天数排序</option>
+		                                  <option value="1">正序</option>
+		                                  <option value="2">倒序</option>
+		                              </select>
+		                          </div>
+                                 <button class="btn btn-wide btn-primary" type="button" onclick='doSearch()'>搜索</button>
+                                 <button class="btn btn-wide btn-primary" type="button" onclick='opennew()'>新增</button>
+                             </div>
+                         </form>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+         <div class="panel">
+             <div class="panel-content">
+                 <div class="row"  style="margin-left: 0px;">
+                     <div class="col-md-12">
+                         <div class="jqGrid_main" id="myjqgridwrapper" style="width:95%;height: auto">
+                             <table id="jqGrid"></table> 
+                             <div id="jqGridPager"></div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+    </div>
+ </div>
+ 
+ 
+<!--图书信息-->
+<div class="theme-popover"  id="module1">
+    <div class="theme-main">
+        <form class="form-horizontal">
+        <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">ISBN号</label>
+                <div class="col-sm-10">
+                	<input type="text" class="form-control" id="cisbn" placeholder="ISBN号">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">书名</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="cname" placeholder="图书名称">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">作者</label>
+                <div class="col-sm-10">
+                	<input type="text" class="form-control" id="cauthor" placeholder="作者">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">页数</label>
+                <div class="col-sm-10">
+                	<input type="text" class="form-control" id="cpages" placeholder="页数">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">价格</label>
+                <div class="col-sm-10">
+                	<input type="text" class="form-control" id="cprice" placeholder="价格">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">出版社</label>
+                <div class="col-sm-10">
+                	<input type="text" class="form-control" id="cdublisher" placeholder="出版社">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">图书简介</label>
+                <div class="col-sm-10">
+                	<input type="text" class="form-control" id="cdescription" placeholder="图书简介">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12 text-center margin-top-20">
+                    <button class="btn btn-wide btn-primary" type="button" onclick="save()" id="saveid">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+ 
+ 
+  
+<!--图书信息-->
+<div class="theme-popover"  id="module2">
+    <div class="theme-main">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">借阅人ID</label>
+                <div class="col-sm-8">
+                	<input type="text" class="form-control" id="reader_id" placeholder="借阅人ID">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">借阅人名称</label>
+                <div class="col-sm-8">
+                	<input type="text" class="form-control" id="reader_name" placeholder="借阅人名称">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">联系电话</label>
+                <div class="col-sm-8">
+                	<input type="text" class="form-control" id="tel" placeholder="联系电话">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="" class="col-sm-2 control-label no-padding-left">应还时间</label>
+	            <div class="col-sm-8">
+	                <div class="input-daterange input-group col-sm-12" id="range-datepicker">
+	                    <input type="text" class="input-sm form-control" name="should_date" id="should_date" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" placeholder="约定归还时间" />
+	                </div>
+	            </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12 text-center margin-top-20">
+                    <button class="btn btn-wide btn-primary" type="button" onclick="dout()">确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+ 
+ 
+ 
+ <!--明细-->
+ <div class="theme-popover"  id="module">
+     <div class="theme-main">
+         <div class="state_examine margin-bottom-10">
+             <span>ISBN号：<b id="bisbn" >-</b></span>
+             <span>图书名称：<b id="bname">-</b></span>
+             <span hidden="true">图书价格：<b id="bprice">-</b></span>
+             <span>当前借阅状态：<b id="bStatus2">-</b></span>
+             <span>当前借阅人：<b id="breaderName">-</b></span>
+             <span>借阅天数：<b id="bdays">-</b></span>
+             <span>借出时间：<b id="bcreateTime">-</b></span>
+         </div>
+         <div class="jqGrid_main" id="myjqgridwrapper_2" style="width:100%;height: auto">
+             <table id="jqGrid_2"></table> 
+             <div id="jqGridPager_2"></div>
+         </div>
+     </div>
+ </div>
+<script src="/js/vue/vue.min.js"></script>
+<script src="/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/layer/layer.js"></script><!--弹窗-->
+<script src="/js/datepicker/WdatePicker.js"></script><!--日历-->
+<script type="text/javascript" src="/js/jqgrid/js/i18n/grid.locale-cn.js"></script><!--jqGrid-->
+<script type="text/javascript" src="/js/jqgrid/js/jquery.jqGrid.src.js"></script><!--jqGrid-->
+
+<script src="/js/selectpage/selectpage.js"></script><!--分页下拉-->
+<script src="/js/select2/js/select2.min.js"></script><!--下拉-->
+
+ <script type="text/javascript">
+
+$(function(){
+	
+   pageInit();
+   pageInit_2();
+});
+
+var bid ="";
+
+function logout(){
+	window.location.href="login.html";
+}
+
+function opennew(){
+	console.log("xingzeng ");
+	 open();
+	 $('#saveid').show();
+}
+
+
+
+// 图书详情弹框
+function open(){
+ layer.open({
+      type: 1,
+      area: ['420px', '450px'], 
+      title: '图书详情', 
+      content: $('#module1'), 
+      cancel: function(index){
+        layer.close('index');
+        	$('#cisbn').val("");
+	     	$('#cname').val("");
+	     	$('#cauthor').val("");
+	     	$('#cdublisher').val("");
+	     	$('#cpages').val("");
+	     	$('#cprice').val("");
+	     	$('#cdescription').val("");
+        this.content.show();
+      },
+      success:function(){
+      }
+   }); 
+}
+
+//获取详情 
+function cat(id){
+	layer.load();
+	$.ajax({
+		url: "/work/bookstore/getbookByid",
+		data:{'id' : id},
+		type:"post",
+		async : false,
+		success:function(data){
+			layer.closeAll();
+			if(data.code==200){  //获取到的信息放到页面上
+				$('#cisbn').val(data.data.isbn);
+		      	$('#cname').val(data.data.name);
+		      	$('#cauthor').val(data.data.author);
+		      	$('#cdublisher').val(data.data.dublisher);
+		      	$('#cpages').val(data.data.pages);
+		      	$('#cprice').val(data.data.price);
+		      	$('#cdescription').val(data.data.description);
+				$('#saveid').hide();
+				open();
+			}else{
+				layer.closeAll();
+				layer.msg(data.message);
+			}
+		},
+		error:function(data){
+			layer.closeAll();
+			layer.closeAll();
+			layer.msg(data);
+		}
+	});
+}
+
+
+//  修改图书 
+ function edit(id,Status2){
+	bid= id;
+	 if(Status2==2){
+		 layer.msg("此书已经被借出 待归还后才能做修改");
+		 return ;
+	 }
+	 layer.load();
+	 $.ajax({ //先获取到图书信息  放在页面上 
+		url: "/work/bookstore/getbookByid",
+		data:{'id' : id},
+		type:"post",
+		async : false,
+		success:function(data){
+			if(data.code==200){
+				layer.closeAll();
+				$('#cisbn').val(data.data.isbn);
+		      	$('#cname').val(data.data.name);
+		      	$('#cauthor').val(data.data.author);
+		      	$('#cdublisher').val(data.data.dublisher);
+		      	$('#cpages').val(data.data.pages);
+		      	$('#cprice').val(data.data.price);
+		      	$('#cdescription').val(data.data.description);
+				$('#saveid').show();
+				open();
+			}else{
+				layer.closeAll();
+				layer.msg(data.message);
+			}
+		},
+		error:function(data){
+			layer.closeAll();
+			layer.msg(data);
+		}
+	});
+	 console.log('bid',bid);
+ }
+ 
+ //保存按钮  用于保存修改的数据  或者新增图书
+ function save(){
+	 console.log('bid',bid);
+
+	var isbn =	$('#cisbn').val();
+	var name = $('#cname').val();
+	var author = $('#cauthor').val();
+	var dublishe = $('#cdublisher').val();
+	var pages = $('#cpages').val();
+	var price = $('#cprice').val();
+	var description = $('#cdescription').val();
+	if(!isNumber(price)){
+		layer.msg("输入的价格是非法的");
+		return ;
+	}
+	if(null==price||""==price){
+		layer.msg("输入的价格为空");
+		return ;
+	}
+	if(price>10000){
+		layer.msg("价格不能大于10000");
+		return ;
+	}
+
+	isNumber()
+	var data = {
+		'isbn' : isbn,	
+		'name' : name,	
+		'pages' : pages,	
+		'price' : price,	
+		'author' : author,	
+		'dublisher' : dublishe,	
+		'description' : description
+	}
+	
+	if(bid==""||bid==null){
+		layer.load();
+		 $.ajax({
+			url: "/work/bookstore/addBook",
+			data:{'json' : JSON.stringify(data)},
+			type:"post",
+			async : false,
+			success:function(data){
+				layer.closeAll();
+				$('#cisbn').val("");
+		     	$('#cname').val("");
+		     	$('#cauthor').val("");
+		     	$('#cdublisher').val("");
+		     	$('#cpages').val("");
+		     	$('#cprice').val("");
+		     	$('#cdescription').val("");
+				if(data.code==200){
+		      	    layer.msg("执行成功");
+			     	doSearch();
+		    	  }else{
+		      	  	layer.msg(data.message);
+		    	  }
+			},
+			error:function(data){
+				$('#cisbn').val("");
+		     	$('#cname').val("");
+		     	$('#cauthor').val("");
+		     	$('#cdublisher').val("");
+		     	$('#cpages').val("");
+		     	$('#cprice').val("");
+		     	$('#cdescription').val("");
+				layer.closeAll();
+				layer.msg(data);
+			}
+			});
+	}else{
+		layer.load();
+		 $.ajax({
+			url: "/work/bookstore/updatebookByid",
+			data:{'json' : JSON.stringify(data),'id':bid},
+			type:"post",
+			async : false,
+			success:function(data){
+					layer.closeAll();
+					bid="";
+					$('#cisbn').val("");
+			     	$('#cname').val("");
+			     	$('#cauthor').val("");
+			     	$('#cdublisher').val("");
+			     	$('#cpages').val("");
+			     	$('#cprice').val("");
+			     	$('#cdescription').val("");
+				if(data.code==200){
+		      	    layer.msg("执行成功");
+			     	doSearch();
+		    	  }else{
+		      	  	layer.msg(data.message);
+		    	  }
+			},
+			error:function(data){
+				layer.closeAll();
+				bid="";
+				$('#cisbn').val("");
+		     	$('#cname').val("");
+		     	$('#cauthor').val("");
+		     	$('#cdublisher').val("");
+		     	$('#cpages').val("");
+		     	$('#cprice').val("");
+		     	$('#cdescription').val("");
+				layer.closeAll();
+				layer.msg(data);
+			}
+		});
+		
+	}
+	
+	 
+ }
+ 
+ function del(id,Status2){
+		layer.confirm('确认要删除图书？', {
+		    btn : [ '确定', '取消' ]//按钮
+		}, function(index) {
+			docreate(id,Status2);
+		})
+	}
+ 
+//删除图书
+ function docreate(id,Status2){
+	 if(Status2==2){
+		 layer.msg("此书已经被借出 待换回才能做修改");
+		 return ;
+	 }
+	 layer.load();
+	 $.ajax({
+		url: "/work/bookstore/deletebookByid",
+		data:{'id' : id},
+		type:"post",
+		async : false,
+		success:function(data){
+			layer.closeAll();
+			if(data.code==200){
+	      	    layer.msg("执行成功");
+				doSearch();
+			}else{
+				layer.msg(data.message);
+			}
+		},
+		error:function(data){
+			layer.closeAll();
+			layer.msg(data);
+		}
+	});
+ }
+ 
+ 
+function pageInit(){
+	
+    jQuery("#jqGrid").jqGrid({
+        url : '/work/bookstore/bookList',
+        datatype : "json",
+        colModel : [
+		        	 {label: '操作',width : 120,
+		                 formatter:function(cellvalue, options, rowObject){
+		                	 
+		                	 var id=rowObject.id;
+		                	 var status=rowObject.status;
+	                         
+		                     var temp = '<a title="查看"  class="color-primary" href="javascript:cat(\'' + id + '\')" ><i class="icon-eye-open"></i></a> &#12288'
+		                     +'<a title="修改"  class="color-primary" href="javascript:edit(\'' + id + '\',\'' + status + '\')"><i class="icon-pencil" ></i></a> &#12288'
+		                     +' <a title="删除"  class="color-primary" href="javascript:del(\'' + id + '\',\''+status+'\')"><i class="icon-remove  color-danger" ></i></a>'
+		                     return temp;
+		                 }
+		             }, 
+                    {label: 'ISBN号',name : 'isbn',index : 'isbn',width : 150}, 
+                    {label: '图书名称',name : 'name',index : 'name',width : 150,
+                    	formatter:function(cellvalue, options, rowObject){
+                    		
+                        	var id=rowObject.id;
+                        	var name=rowObject.name;
+                        	var isbn=rowObject.isbn;
+                        	var status=rowObject.status;
+                        	var bprice=rowObject.chprice;
+                            var temp = '<a title="" class="color-primary" href="javascript:void(0)" onclick="popup_warehouse(\''+id+'\',\''+status+'\',\''+name+'\',\''+isbn+'\',\''+bprice+'\')">'+cellvalue+'</a>'
+                            return temp;
+                        }
+                    }, 
+                    {label: '作者',name : 'author',index : 'author',width : 80},
+                    {label: '页数',name : 'pages',index : 'pages',width : 100},
+                    {label: '单价',name : 'price',index : 'price',width : 150,
+						formatter:function(cellvalue, options, rowObject){
+                        	var id=rowObject.id;
+                        	var price=rowObject.price;
+                        	var bprice=rowObject.chprice;
+                        	if(isNumber(price)){
+                            	var temp = '<a title="" class="color-primary" href="javascript:void(0)" onclick="updprice(\''+id+'\',\''+bprice+'\')">'+cellvalue+'</a>'
+                        	}else{
+                            	var temp = '<a title="" class="color-primary" href="javascript:void(0)" >'+cellvalue+'</a>'
+                        	}
+                            return temp;
+                        }
+                    },
+                    {label: '出版社',name : 'dublisher',index : 'dublisher',width : 150}, 
+                    {label: '简介',name : 'description',index : 'description',width :180}, 
+                    {label: '借阅状态',name : 'Status2',index : 'Status2',width :180,
+                    	formatter:function(cellvalue, options, rowObject){
+                    		if(!rowObject.status || rowObject.status==null || rowObject.status=='')
+                    			return "未借出";
+                    		if(rowObject.status==1){
+                    			return "未借出";
+                    		}else if(rowObject.status==2){
+                    			return "已借出";
+                    		}
+                    	}, 
+                    },
+                    {label: '操作',width : 120,
+		                 formatter:function(cellvalue, options, rowObject){
+		                	 var id=rowObject.id;
+		                	 if(rowObject.status==1){
+		                		 var temp = '<a href="javascript:gout(\'' + id + '\')" class="color-danger"><i >借出</i></a>'
+                    		 }else if(rowObject.status==2){
+                    			 var temp = '<a href="javascript:gin(\'' + id + '\')" class="color-danger"><i >归还</i></a>'
+                    		 }
+		                     return temp;
+		                 }
+		             }, 
+                    {label: 'id',name : 'id',index : 'id',width : 150,hidedlg : true,hidden:true,key:true}, 
+                    {label: 'chprice',name : 'chprice',index : 'chprice',width : 150,hidedlg : true,hidden:true}, 
+                   ],
+        rowNum : 15,//一页显示多少条
+        rowList : [ 10, 20, 30 ],//可供用户选择一页显示多少条
+        pager : '#jqGridPager',//表格页脚的占位符(一般是div)的id
+        sortname : 'id',//初始化的时候排序的字段
+//         multiselect: true,//复选框
+        sortorder : "desc",//排序方式,可选desc,asc
+        viewsortcols : [false,'',false],
+        mtype : "post",//向后台请求数据的ajax的类型。可选post,get
+        viewrecords : true,
+        shrinkToFit : false,       
+        scroll : false,
+        width:820,
+        autowidth : true,
+        //height : "100%",
+        height:window.innerHeight-300,
+        rownumbers: true,
+        jsonReader : {
+			root: "records",//数据
+			page: "current",//当前页
+			total: "pages",//总页数
+			records: "total"//总条数
+		},
+		prmNames : {
+			page:"page", //页号
+			rows:"rows", 	//条数
+			order: "order"	//排序字段
+		},
+    });
+    jQuery("#jqGrid").jqGrid('navGrid', '#jqGridPager', {edit : false,add : false,del : false});
+    jQuery("#jqGrid").jqGrid('setFrozenColumns');
+}
+$(window).bind('resize', function(){
+    $('#jqGrid').setGridWidth($('#myjqgridwrapper').width());
+    $('#jqGrid').setGridHeight(window.innerHeight-200);
+}).trigger('resize');
+
+var doutid="";
+// 确认借出按钮
+function dout(){
+	
+	layer.confirm('确认要借出图书？', {
+	    btn : [ '确定', '取消' ]//按钮
+	}, function(index) {
+		doOut();
+	})
+}
+
+// 比较当前日期 小于当前日期返回1 否返回0
+function contrastTime(start) {  
+    var dB = new Date(start.replace(/-/g, "/"));//获取当前选择日期  
+    var d = new Date();  
+    var str = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();//获取当前实际日期  
+    if (Date.parse(str) > Date.parse(dB)) {//时间戳对比  
+           return 1;  
+    }   
+    return 0;  
+}  
+
+function doOut(){
+	
+	var should_date = $("#should_date").val();
+	var reader_name = $("#reader_name").val();
+	var reader_id = $("#reader_id").val();
+	var tel =$("#tel").val();
+	
+	if(contrastTime(should_date)==1){
+		layer.msg("应还时间小于当前时间");
+		return;
+	}
+	
+	if(!isNumber(reader_id)){
+		layer.msg("借阅人ID必须为数字");
+		return;
+	}
+	if(!isNumber(tel)){
+		layer.msg("联系电话格式不正确");
+		return;
+	}
+	if(reader_id.length>18){
+		layer.msg("借阅人ID长度不可大于9位");
+		return;
+	}
+	
+	if(null==reader_id||reader_id==""){
+		layer.msg("借阅人ID为空");
+		return;
+	}
+	if(null==reader_name||reader_name==""){
+		layer.msg("借阅人名称为空");
+		return;
+	}
+	if(null==should_date||should_date==""){
+		layer.msg("应还日期为空");
+		return;
+	}
+	if(null==tel||tel==""){
+		layer.msg("联系电话不能为空");
+		return;
+	}
+	var data ={
+		'shouldDate':should_date,
+		'readerName':reader_name,
+		'readerId':reader_id,
+		'tel' : tel,
+		'bookId' : doutid
+	}
+	layer.load();
+	$.ajax({
+	      type: 'POST', //type
+	      url: '/work/bookstore/gout', //url
+	      data: {'json' : JSON.stringify(data)},
+	      dataType: 'json',
+	      async: false,
+	      success: function(data) {
+    	  	layer.closeAll();
+    	  	$("#should_date").val("");
+        	$("#reader_name").val("");
+        	$("#reader_id").val("");
+        	$("#tel").val("");
+        	doutid="";
+			if(data.code==200){
+		      	doSearch();
+			}else{
+		      	layer.msg(data.message);
+			}
+	      },
+	      error: function(message) {
+			layer.closeAll();
+			$("#should_date").val("");
+		 	$("#reader_name").val("");
+		 	$("#reader_id").val("");
+		 	$("#tel").val("");
+	   	   console.log(message);
+	      }
+	    })
+	
+}
+
+function gout(id){
+	layer.open({
+        type: 1,
+        area: ['450px', '400px'], 
+        title: '借阅登记', 
+        content: $('#module2'), 
+        cancel: function(index){
+        	
+        	$("#should_date").val("");
+        	$("#reader_name").val("");
+        	$("#reader_id").val("");
+        	$("#tel").val("");
+        	doutid="";
+          layer.close('index');
+          this.content.show();
+        },
+        success:function(){
+        	doutid=id;
+        }
+    });
+	
+	
+}
+
+//确认归还按钮
+function gin(id){
+	
+	layer.confirm('确认归还图书？', {
+	    btn : [ '确定', '取消' ]//按钮
+	}, function(index) {
+		dgin(id);
+	})
+}
+ 
+function dgin(id){
+	layer.load();
+	$.ajax({
+	      type: 'POST', //type
+	      url: '/work/bookstore/gin', //url
+	      data: {'id' : id},
+	      dataType: 'json',
+	      async: false,
+	      success: function(data) {
+        	layer.closeAll();
+			if(data.code==200){
+	      	    layer.msg("执行成功");
+		      	doSearch();
+			}else{
+	      	    layer.msg(data.message);
+			}
+
+	      },
+	      error: function(message) {
+	    	  layer.closeAll();
+	   	   console.log(message);
+	      }
+	    })
+}
+
+
+function getByBookId(id){
+	$.ajax({
+	      type: 'POST', //type
+	      url: '/work/registerBorrow/getByBookId', //url
+	      data: {'id' : id},
+	      dataType: 'json',
+	      async: false,
+	      success: function(data) {
+	    	  if(data.code==200){
+	        	$("#breaderName").html(data.data.readerName);
+	        	$("#bcreateTime").html(data.data.createTime);
+	        	$("#bdays").html(data.data.days);
+	    	  }else{
+	      	  	layer.msg(data.message);
+	    	  }
+
+	      },
+	      error: function(message) {
+	    	  layer.closeAll();
+	   	   console.log(message);
+	      }
+	    })
+}
+
+function doSearch(){
+	var bookName = $("#bookName").val();
+	var rstatus = $("#rstatus").val();
+	var author = $("#author").val();
+	var byprice = $("#byprice").val();
+	var byday = $("#byday").val();
+	
+	
+	var data={
+		'bookName': bookName,
+		'status' : rstatus,
+		'author': author,
+		'byday': byday,
+		'byprice':byprice
+	};
+	$("#jqGrid").jqGrid('setGridParam', {
+        datatype: 'json',
+        postData: data,
+        page: 1
+      }).trigger("reloadGrid");
+}
+
+function updprice(id,bprice){
+	$("#jqGrid").jqGrid('setCell',id,"price",bprice);  
+}
+
+
+function popup_warehouse(id,status,name,isbn,bprice){
+	layer.open({
+        type: 1,
+        area: ['900px', '550px'], 
+        title: '借阅明细', 
+        content: $('#module'), 
+        cancel: function(index){
+        	
+        	$("#bisbn").html("");
+        	$("#bname").html("");
+        	$("#bStatus2").html("");
+        	$("#breaderName").html("");
+        	$("#bcreateTime").html("");
+        	$("#bdays").html("");
+        	$("#bprice").html("");
+          layer.close('index');
+          this.content.show();
+        },
+        success:function(){
+        	$("#bisbn").html(isbn);
+        	$("#bname").html(name);
+        	$("#bprice").html(bprice);
+        	console.log('status',status);
+        	if(status==2){
+        		$("#bStatus2").html("已借出");
+	        	getByBookId(id);
+        	}else{
+        		$("#bStatus2").html("未借出");
+        	}
+        	doSearch2(id);
+        }
+    });
+}
+
+
+function doSearch2(id){
+	var data={
+		'id':id
+	};
+	$("#jqGrid_2").jqGrid('setGridParam', {
+        datatype: 'json',
+        postData: data,
+        page: 1
+      }).trigger("reloadGrid");
+}
+function pageInit_2(){
+	
+    jQuery("#jqGrid_2").jqGrid({
+        url : '/work/registerBorrow/regBorrowList',
+        datatype : "json",
+        colModel : [
+		        	 {label: '借阅人',name : 'readerName',index : 'readerName',width : 120}, 
+		             {label: '借出时间',name : 'createTime',index : 'createTime',width : 150 }, 
+		             {label: '应还日期',name : 'shouldDate',index : 'shouldDate',width :150,}, 
+		             {label: '实际归还日期',name : 'backTime',index : 'backTime',width :150,}, 
+		             {label: '已借天数',name : 'days',index : 'days',width :100,},
+		             {label: '借阅人TEL',name : 'tel',index : 'tel',width :120 },
+                   ],
+        rowNum : 10,//一页显示多少条
+        rowList : [ 10, 20, 30 ],//可供用户选择一页显示多少条
+        pager : '#jqGridPager_2',//表格页脚的占位符(一般是div)的id
+        sortname : 'id',//初始化的时候排序的字段
+        multiselect: false,//复选框
+        sortorder : "desc",//排序方式,可选desc,asc
+        viewsortcols : [false,'',false],
+        mtype : "get",//向后台请求数据的ajax的类型。可选post,get
+        viewrecords : true,
+        shrinkToFit : false,
+        autowidth: true,
+        //scroll : true,
+        //width:"100%",
+        height : 350,
+        rownumbers: true,
+        jsonReader : {
+			root: "records",//数据
+			page: "current",//当前页
+			total: "pages",//总页数
+			records: "total"//总条数
+		},
+		prmNames : {
+			page:"page", //页号
+			rows:"rows", 	//条数
+			order: "order"	//排序字段
+		},
+    });
+    jQuery("#jqGrid_2").jqGrid('navGrid', '#jqGridPager_2', {edit : false,add : false,del : false});
+    jQuery("#jqGrid_2").jqGrid('setFrozenColumns');
+}
+$(window).bind('resize', function(){
+    $('#jqGrid_2').setGridWidth($('#myjqgridwrapper_2').width());
+    //$('#jqGrid_2').setGridHeight(window.innerHeight-200);
+}).trigger('resize'); 
+
+
+
+var vm = new Vue({
+	 	el:'#vues',
+	 	data:{
+	 		bookstatus : new Object()
+	 	},
+	 	methods: {
+	 	}
+	 });
+	 
+//判断是否数字
+function isNumber(val){
+
+    var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    if(regPos.test(val) || regNeg.test(val)){
+        return true;
+    }else{
+        return false;
+    }
+}
+	 
+</script>  
+
+</body>
+
+</html>

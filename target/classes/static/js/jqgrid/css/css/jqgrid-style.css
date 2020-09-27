@@ -1,0 +1,15 @@
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{background: none;background: #eee;color: #222;font-weight: 100;border-color: #dfe6ec}
+.ui-jqgrid .ui-jqgrid-view{font-size: 14px}
+.ui-jqgrid .ui-jqgrid-htable th{padding: 8px 2px}
+.ui-jqgrid tr.ui-row-ltr td{border-color: #dfe6ec;text-align: center;}
+.ui-jqgrid tr.jqgrow td{padding: 6px 2px}
+/*.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { border: 1px solid #79b7e7; background: #d0e5f5 url(images/ui-bg_glass_75_d0e5f5_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #1d5987; }
+*/
+.ui-widget-content{border:1px solid #ccc;overflow: hidden;}
+/*.ui-jqgrid tr.jqgfirstrow td{white-space: normal;padding: 0 2px;border-right-style: solid;
+    border-right-width: 1px;}
+.frozen-div.ui-state-default.ui-jqgrid-hdiv{border:none !important;}*/
+/*#jqGrid_frozen .jqgfirstrow td{display: none}*/
+
+
+
